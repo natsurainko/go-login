@@ -16,6 +16,7 @@ func FetchUnauditedReports(c *gin.Context) {
 			Code:    http.StatusBadRequest,
 			Message: "missing parameters",
 		})
+		return
 	} else {
 		UserId, _ = strconv.ParseInt(user_id, 10, 64)
 	}

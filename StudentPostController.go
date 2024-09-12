@@ -21,18 +21,18 @@ func ReleasePost(c *gin.Context) {
 	}
 
 	var userData UserDataRecord
-	datebase := getDataBase()
+	database := getDataBase()
 
 	//var count int64
 	var code int = http.StatusOK
 	var message string = "success"
 
-	//datebase.Model(PostDataRecord{}).Count(&count)
+	//database.Model(PostDataRecord{}).Count(&count)
 
-	if datebase.Find(&userData, "user_id = ?", requestBody.UserId).RowsAffected == 0 {
+	if database.Find(&userData, "user_id = ?", requestBody.UserId).RowsAffected == 0 {
 		code = http.StatusBadRequest
 		message = "用户不存在"
-	} else if result := datebase.Create(&PostDataRecord{
+	} else if result := database.Create(&PostDataRecord{
 		Content: requestBody.Content,
 		UserId:  requestBody.UserId,
 		Time:    time.Now().String(),
@@ -113,6 +113,7 @@ func DeletePost(c *gin.Context) {
 			Code:    http.StatusBadRequest,
 			Message: "missing parameters",
 		})
+		return
 	}
 
 	UserId, _ = strconv.ParseInt(user_id, 10, 64)
@@ -195,6 +196,7 @@ func ViewReport(c *gin.Context) {
 			Code:    http.StatusBadRequest,
 			Message: "missing parameters",
 		})
+		return
 	} else {
 		UserId, _ = strconv.ParseInt(user_id, 10, 64)
 	}
