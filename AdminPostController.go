@@ -77,7 +77,7 @@ func FetchUnauditedReports(c *gin.Context) {
 func AuditedReport(c *gin.Context) {
 	var requestBody AuditedReportRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),

@@ -12,7 +12,7 @@ import (
 func ReleasePost(c *gin.Context) {
 	var requestBody ReleasePostRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),
@@ -66,7 +66,7 @@ func FetchAllPosts(c *gin.Context) {
 func ModifyPost(c *gin.Context) {
 	var requestBody ModifyPostRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),
@@ -150,7 +150,7 @@ func DeletePost(c *gin.Context) {
 func ReportPost(c *gin.Context) {
 	var requestBody ReportPostRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),

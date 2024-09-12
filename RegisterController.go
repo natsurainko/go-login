@@ -12,7 +12,7 @@ import (
 func Register(c *gin.Context) {
 	var requestBody RegisterRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),

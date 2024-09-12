@@ -9,7 +9,7 @@ import (
 func Login(c *gin.Context) {
 	var requestBody LoginRequestJsonObject
 
-	if error := c.ShouldBindJSON(&requestBody); error != nil {
+	if error := c.BindJSON(&requestBody); error != nil {
 		c.JSON(http.StatusOK, &ResponseJsonObject{
 			Code:    http.StatusBadRequest,
 			Message: error.Error(),
