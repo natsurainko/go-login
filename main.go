@@ -2,60 +2,78 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+
+	"login-project/controllers"
+	"login-project/dao"
+	"login-project/services"
 )
 
-var DatabaseCache *gorm.DB
+var UserDao dao.UserDao
+var PostDao dao.PostDao
+var ReportDao dao.ReportDao
+
+var DataBaseService services.DataBaseService = services.DataBaseService{}
+var UserService services.UserService
+var PostService services.PostService
+var ReportService services.ReportService
+
+var RegisterController controllers.RegisterController
+var LoginController controllers.LoginController
+var StudentPostController controllers.StudentPostController
+var AdminPostController controllers.AdminPostController
 
 func main() {
 	r := gin.Default()
 
-	// Routes
-	r.POST("/api/user/reg", Register)
-	r.POST("/api/user/login", Login)
-
-	r.POST("/api/student/post", ReleasePost)
-	r.GET("/api/student/post", FetchAllPosts)
-	r.PUT("/api/student/post", ModifyPost)
-	r.DELETE("/api/student/post", DeletePost)
-
-	r.POST("/api/student/report-post", ReportPost)
-	r.GET("/api/student/report-post", ViewReport)
-
-	r.GET("/api/admin/report", FetchUnauditedReports)
-	r.POST("/api/admin/report", AuditedReport)
+	InitServices()
+	InitControllers()
+	InitRoutes(r)
 
 	r.Run()
 }
 
-func getDataBase() *gorm.DB {
-	if DatabaseCache != nil {
-		return DatabaseCache
+func InitServices() {
+	DataBaseService.InitDataBase()
+
+	UserDao = dao.UserDao{
+		DataBase: DataBaseService.DataBase,
+	}
+	PostDao = dao.PostDao{
+		DataBase: DataBaseService.DataBase,
+	}
+	ReportDao = dao.ReportDao{
+		DataBase: DataBaseService.DataBase,
 	}
 
-	db, error := gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
-	if error != nil {
-		panic("failed to connect database:" + error.Error())
+	UserService = services.UserService{
+		UserDao: UserDao,
 	}
-
-	DatabaseCache = db
-
-	if !db.Migrator().HasTable(&UserDataRecord{}) {
-		db.AutoMigrate(&UserDataRecord{})
+	PostService = services.PostService{
+		PostDao: PostDao,
 	}
-	if !db.Migrator().HasTable(&PostDataRecord{}) {
-		db.AutoMigrate(&PostDataRecord{})
+	ReportService = services.ReportService{
+		ReportDao:   ReportDao,
+		PostService: PostService,
 	}
-	if !db.Migrator().HasTable(&ReportDataRecord{}) {
-		db.AutoMigrate(&ReportDataRecord{})
-	}
-
-	return db
 }
 
-type ResponseJsonObject struct {
-	Code    int    `json:"code"`
-	Data    any    `json:"data"`
-	Message string `json:"msg"`
+func InitControllers() {
+	RegisterController = controllers.RegisterController{
+		UserService: UserService,
+	}
+
+	LoginController = controllers.LoginController{
+		UserService: UserService,
+	}
+
+	StudentPostController = controllers.StudentPostController{
+		UserService:   UserService,
+		PostService:   PostService,
+		ReportService: ReportService,
+	}
+
+	AdminPostController = controllers.AdminPostController{
+		UserService:   UserService,
+		ReportService: ReportService,
+	}
 }

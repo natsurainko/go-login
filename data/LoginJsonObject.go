@@ -1,4 +1,4 @@
-package main
+package data
 
 type LoginRequestJsonObject struct {
 	UserName string `json:"username"`

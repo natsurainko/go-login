@@ -1,4 +1,4 @@
-package main
+package data
 
 type RegisterRequestJsonObject struct {
 	UserName string `json:"username"`

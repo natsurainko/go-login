@@ -1,4 +1,4 @@
-package main
+package data
 
 type AdminViewReportResponseJsonObject struct {
 	ReportList any `json:"report_list"`
